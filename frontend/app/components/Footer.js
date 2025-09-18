@@ -10,7 +10,6 @@ const Footer = () => {
                     </div>
                     <div className="flex gap-6">
                         <a href="#" className="hover:text-white transition-colors">Proudly Made In India</a>
-                        
                     </div>
                 </div>
             </footer>

@@ -402,7 +402,7 @@ def retrain_model():
 
 
 scheduler = BackgroundScheduler(timezone=india)
-scheduler.add_job(func=retrain_model, trigger="cron", hour=19, minute=14)
+scheduler.add_job(func=retrain_model, trigger="cron", hour=2, minute=30)
 scheduler.start()
 
 
