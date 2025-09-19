@@ -74,7 +74,7 @@ model_lock = threading.Lock()
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
-MODEL_DIR = os.path.join(APP_DIR, '..', 'models')
+MODEL_DIR = os.path.join(APP_DIR, 'models')
 
 tf1 = load(os.path.join(MODEL_DIR, "tfidf_vectorizer.joblib"))
 tf1_matrix = load(os.path.join(MODEL_DIR, "tfidf_matrix.joblib"))
