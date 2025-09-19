@@ -31,9 +31,12 @@ CORS(app, supports_credentials=True ,origins=["http://localhost:3000"])
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 if os.environ.get("RENDER") == "true":
-    persistent_db_path = "/opt/render/project/persistent/database.db"
+    persistent_folder = "/opt/render/project/persistent"
+    os.makedirs(persistent_folder, exist_ok=True)
+    persistent_db_path = os.path.join(persistent_folder, "database.db")
 else:
     persistent_db_path = "database.db"  # local SQLite
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{persistent_db_path}"
 
