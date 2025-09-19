@@ -199,8 +199,8 @@ def login():
         str(user.id),         # or user.email
         path="/", 
         httponly=True,        # prevents JavaScript access
-        secure=False,         # set to True in production (HTTPS)
-        samesite="Lax",    # helps prevent CSRF
+        secure=True,         # set to True in production (HTTPS)
+        samesite="None",    # helps prevent CSRF (set to 'Lax' or 'Strict' as needed)
         max_age=7 * 24 * 60 * 60  # 7 days in seconds
     )
 
