@@ -1,13 +1,14 @@
 import os
 from flask import Flask,request,jsonify,make_response
 from flask_cors import CORS
-from utils.new_user import get_recommendations
+# from utils.new_user import get_recommendations
 # from utils.existing_user import svd_recommendations
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
 from joblib import load
+from sklearn.metrics.pairwise import linear_kernel
 import numpy as np
 import subprocess
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -70,6 +71,32 @@ svd = None
 all_movies = None
 
 model_lock = threading.Lock()
+
+
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+
+MODEL_DIR = os.path.join(APP_DIR, '..', 'models')
+
+tf1 = load(os.path.join(MODEL_DIR, "tfidf_vectorizer.joblib"))
+tf1_matrix = load(os.path.join(MODEL_DIR, "tfidf_matrix.joblib"))
+merged_df = pd.read_pickle(os.path.join(MODEL_DIR, "merged_df.pkl"))
+indices = pd.read_pickle(os.path.join(MODEL_DIR, "title_indices.pkl"))
+
+
+def get_recommendations(title):
+    title = title.lower().strip()
+    title_matches = merged_df[merged_df['title_cleaned'].str.lower() == title]
+
+    if title_matches.empty:
+        return []
+
+    idx = title_matches.index[0]
+    sim_scores = linear_kernel(tf1_matrix[idx], tf1_matrix).flatten()
+    sim_scores = sorted(list(enumerate(sim_scores)), key=lambda x: x[1], reverse=True)
+    sim_scores = sim_scores[0:21]
+    movie_indices = [i[0] for i in sim_scores if i[0] < len(merged_df)]
+
+    return merged_df['title'].iloc[movie_indices].tolist()
 
 def get_data_and_model():
     global s2, svd, all_movies
