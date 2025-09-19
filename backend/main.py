@@ -72,7 +72,6 @@ all_movies = None
 
 model_lock = threading.Lock()
 
-
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_DIR = os.path.join(APP_DIR, '..', 'models')
