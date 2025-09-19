@@ -21,16 +21,27 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, supports_credentials=True ,origins=["http://localhost:3000"])
 
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = os.getenv('DB_PORT')
-DB_NAME = os.getenv('DB_NAME')
+# DB_USER = os.getenv('DB_USER')
+# DB_PASSWORD = os.getenv('DB_PASSWORD')
+# DB_HOST = os.getenv('DB_HOST')
+# DB_PORT = os.getenv('DB_PORT')
+# DB_NAME = os.getenv('DB_NAME')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+if os.environ.get("RENDER") == "true":
+    persistent_db_path = "/opt/render/project/persistent/database.db"
+else:
+    persistent_db_path = "database.db"  # local SQLite
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{persistent_db_path}"
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+# db = SQLAlchemy(app)
 
 MAX_ID_OFFSET = 200950
 
@@ -199,8 +210,8 @@ def login():
         str(user.id),         # or user.email
         path="/", 
         httponly=True,        # prevents JavaScript access
-        secure=True,         # set to True in production (HTTPS)
-        samesite="None",    # helps prevent CSRF (set to 'Lax' or 'Strict' as needed)
+        secure=False,         # set to True in production (HTTPS)
+        samesite="Lax",    # helps prevent CSRF (set to 'Lax' or 'Strict' as needed)
         max_age=7 * 24 * 60 * 60  # 7 days in seconds
     )
 
