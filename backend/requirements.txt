@@ -11,3 +11,4 @@ pytz==2024.2
 scikit-learn==1.7.0
 scikit-surprise==1.1.4
 gunicorn==21.2.0
+pymysql==1.1.1
